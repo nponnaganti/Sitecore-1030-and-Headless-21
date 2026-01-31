@@ -1,0 +1,295 @@
+{
+    "Parameters": {
+        "SolrDomain": {
+            "Type": "String",
+            "Description" : "The url/domain for Solr, used to create Self-Signed SSL Certificate",
+            "DefaultValue" : "localhost"
+        },
+        "SolrPort": {
+            "Type": "Int",
+            "Description": "The Solr port.",
+            "DefaultValue": 8983
+        },
+        "CorePrefix": {
+            "Type": "String",
+            "DefaultValue": "sitecore",
+            "Description": "The prefix for each of the created indexes."
+        },
+        "NumShards": {
+            "Type": "Int",
+            "Descrtiption": "The number of shards to be created as part of the collection.",
+            "DefaultValue": 1
+        },
+        "ReplicationFactor": {
+            "Type": "Int",
+            "Description": "The number of replicas to be created for each shard.",
+            "DefaultValue": 1
+        },
+        "MaxShardsPerNode": {
+            "Type": "Int",
+            "Description": "Maximum number of shards per node.",
+            "DefaultValue": 10
+        },
+        "AutoCreateFields": {
+            "Type": "Bool",
+            "Description": "Automatically create fields.",
+            "DefaultValue": false
+        }
+    },
+    "Variables": {
+        "Solr.Api.ContentType": "application/json",
+        "Solr.Base.Uri":    "[concat('https://',parameter('SolrDomain'),':',parameter('SolrPort'))]",
+        "Delete.Collection.Uri" : "[concat(variable('Solr.Base.Uri'), '/solr/admin/collections?action=DELETE')]",
+        "Create.Collection.Uri" : "[concat(variable('Solr.Base.Uri'), '/solr/admin/collections?action=CREATE')]",
+
+        "CoreConfigSet": "[concat(parameter('CorePrefix'), '_core_config')]",
+        "MasterConfigSet": "[concat(parameter('CorePrefix'), '_master_config')]",
+        "WebConfigSet": "[concat(parameter('CorePrefix'), '_web_config')]",
+        "MarketingdefinitionsMasterConfigSet": "[concat(parameter('CorePrefix'), '_marketingdefinitions_master_config')]",
+        "MarketingdefinitionsWebConfigSet": "[concat(parameter('CorePrefix'), '_marketingdefinitions_web_config')]",
+        "MarketingAssetMasterConfigSet": "[concat(parameter('CorePrefix'), '_marketing_asset_master_config')]",
+        "MarketingAssetWebConfigSet": "[concat(parameter('CorePrefix'), '_marketing_asset_web_config')]",
+        "TestingConfigSet": "[concat(parameter('CorePrefix'), '_testing_config')]",
+        "SuggestedTestConfigSet": "[concat(parameter('CorePrefix'), '_suggested_test_config')]",
+        "FxmMasterConfigSet": "[concat(parameter('CorePrefix'), '_fxm_master_config')]",
+        "FxmWebConfigSet": "[concat(parameter('CorePrefix'), '_fxm_web_config')]",
+        "PersonalizationConfigSet": "[concat(parameter('CorePrefix'), '_personalization_config')]",
+        
+        "Create.Collection.Start.Query": "&collection.configName=",
+        "Create.Collection.End.Query": "[concat('&numShards=', parameter('NumShards'),'&replicationFactor=', parameter('ReplicationFactor'), '&maxShardsPerNode=', parameter('MaxShardsPerNode'), '&property.update.autoCreateFields=', parameter('AutoCreateFields'))]",
+        
+        "Create.Collection.Core.QueryParameters": "[concat(variable('Create.Collection.Start.Query'), variable('CoreConfigSet'), variable('Create.Collection.End.Query'))]",
+        "Create.Collection.Master.QueryParameters" : "[concat(variable('Create.Collection.Start.Query'), variable('MasterConfigSet'), variable('Create.Collection.End.Query'))]",
+        "Create.Collection.Web.QueryParameters" : "[concat(variable('Create.Collection.Start.Query'), variable('WebConfigSet'), variable('Create.Collection.End.Query'))]",
+        "Create.Collection.MarketingdefinitionsMaster.QueryParameters" : "[concat(variable('Create.Collection.Start.Query'), variable('MarketingdefinitionsMasterConfigSet'), variable('Create.Collection.End.Query'))]",
+        "Create.Collection.MarketingdefinitionsWeb.QueryParameters" : "[concat(variable('Create.Collection.Start.Query'), variable('MarketingdefinitionsWebConfigSet'), variable('Create.Collection.End.Query'))]",
+        "Create.Collection.MarketingAssetMaster.QueryParameters" : "[concat(variable('Create.Collection.Start.Query'), variable('MarketingAssetMasterConfigSet'), variable('Create.Collection.End.Query'))]",
+        "Create.Collection.MarketingAssetWeb.QueryParameters" : "[concat(variable('Create.Collection.Start.Query'), variable('MarketingAssetWebConfigSet'), variable('Create.Collection.End.Query'))]",
+        "Create.Collection.Testing.QueryParameters" : "[concat(variable('Create.Collection.Start.Query'), variable('TestingConfigSet'), variable('Create.Collection.End.Query'))]",
+        "Create.Collection.SuggestedTest.QueryParameters" : "[concat(variable('Create.Collection.Start.Query'), variable('SuggestedTestConfigSet'), variable('Create.Collection.End.Query'))]",
+        "Create.Collection.FxmMaster.QueryParameters" : "[concat(variable('Create.Collection.Start.Query'), variable('FxmMasterConfigSet'), variable('Create.Collection.End.Query'))]",
+        "Create.Collection.FxmWeb.QueryParameters" : "[concat(variable('Create.Collection.Start.Query'), variable('FxmWebConfigSet'), variable('Create.Collection.End.Query'))]",
+        "Create.Collection.Personalization.QueryParameters" : "[concat(variable('Create.Collection.Start.Query'), variable('PersonalizationConfigSet'), variable('Create.Collection.End.Query'))]",
+
+        "Core.Name":        "[concat(parameter('CorePrefix'), '_core_index')]",
+        "Master.Name":      "[concat(parameter('CorePrefix'), '_master_index')]",
+        "Web.Name":         "[concat(parameter('CorePrefix'), '_web_index')]",
+        "MD.Master.Name":   "[concat(parameter('CorePrefix'), '_marketingdefinitions_master')]",
+        "MD.Web.Name":      "[concat(parameter('CorePrefix'), '_marketingdefinitions_web')]",
+        "MA.Master.Name":   "[concat(parameter('CorePrefix'), '_marketing_asset_index_master')]",
+        "MA.Web.Name":      "[concat(parameter('CorePrefix'), '_marketing_asset_index_web')]",
+        "Testing.Name":     "[concat(parameter('CorePrefix'), '_testing_index')]",
+        "Suggested.Name":   "[concat(parameter('CorePrefix'), '_suggested_test_index')]",
+        "FXM.Master.Name":  "[concat(parameter('CorePrefix'), '_fxm_master_index')]",
+        "FXM.Web.Name":     "[concat(parameter('CorePrefix'), '_fxm_web_index')]",
+        "Personalization.Name": "[concat(parameter('CorePrefix'), '_personalization_index')]"
+    },
+    "Tasks": {
+        "CreateCoreCollection": {
+            "Description": "Create Core Collection",
+            "Type": "HttpRequest",
+            "Params": {
+                "Uri": "[concat(variable('Create.Collection.Uri'), '&name=', variable('Core.Name'), variable('Create.Collection.Core.QueryParameters'))]",
+                "ContentType": "[variable('Solr.Api.ContentType')]"
+            }
+        },
+        "CreateMasterCollection": {
+            "Description": "Create Master Collection",
+            "Type": "HttpRequest",
+            "Params": {
+                "Uri": "[concat(variable('Create.Collection.Uri'), '&name=', variable('Master.Name'), variable('Create.Collection.Master.QueryParameters'))]",
+                "ContentType": "[variable('Solr.Api.ContentType')]"
+            }
+        },
+        "CreateWebCollection": {
+            "Description": "Create Web Collection",
+            "Type": "HttpRequest",
+            "Params": {
+                "Uri": "[concat(variable('Create.Collection.Uri'), '&name=', variable('Web.Name'), variable('Create.Collection.Web.QueryParameters'))]",
+                "ContentType": "[variable('Solr.Api.ContentType')]"
+            }
+        },
+        "CreateMDMasterCollection": {
+            "Description": "Create MD.Master Collection",
+            "Type": "HttpRequest",
+            "Params": {
+                "Uri": "[concat(variable('Create.Collection.Uri'), '&name=', variable('MD.Master.Name'), variable('Create.Collection.MarketingdefinitionsMaster.QueryParameters'))]",
+                "ContentType": "[variable('Solr.Api.ContentType')]"
+            }
+        },
+        "CreateMDWebCollection": {
+            "Description": "Create MD.Web Collection",
+            "Type": "HttpRequest",
+            "Params": {
+                "Uri": "[concat(variable('Create.Collection.Uri'), '&name=', variable('MD.Web.Name'), variable('Create.Collection.MarketingdefinitionsWeb.QueryParameters'))]",
+                "ContentType": "[variable('Solr.Api.ContentType')]"
+            }
+        },
+        "CreateMAMasterCollection": {
+            "Description": "Create MA.Master Collection",
+            "Type": "HttpRequest",
+            "Params": {
+                "Uri": "[concat(variable('Create.Collection.Uri'), '&name=', variable('MA.Master.Name'), variable('Create.Collection.MarketingAssetMaster.QueryParameters'))]",
+                "ContentType": "[variable('Solr.Api.ContentType')]"
+            }
+        },
+        "CreateMAWebCollection": {
+            "Description": "Create MA.Web Collection",
+            "Type": "HttpRequest",
+            "Params": {
+                "Uri": "[concat(variable('Create.Collection.Uri'), '&name=', variable('MA.Web.Name'), variable('Create.Collection.MarketingAssetWeb.QueryParameters'))]",
+                "ContentType": "[variable('Solr.Api.ContentType')]"
+            }
+        },
+        "CreateTestingCollection": {
+            "Description": "Create Testing Collection",
+            "Type": "HttpRequest",
+            "Params": {
+                "Uri": "[concat(variable('Create.Collection.Uri'), '&name=', variable('Testing.Name'), variable('Create.Collection.Testing.QueryParameters'))]",
+                "ContentType": "[variable('Solr.Api.ContentType')]"
+            }
+        },
+        "CreateSuggestedCollection": {
+            "Description": "Create Suggested Collection",
+            "Type": "HttpRequest",
+            "Params": {
+                "Uri": "[concat(variable('Create.Collection.Uri'), '&name=', variable('Suggested.Name'), variable('Create.Collection.SuggestedTest.QueryParameters'))]",
+                "ContentType": "[variable('Solr.Api.ContentType')]"
+            }
+        },
+        "CreateFXMMasterCollection": {
+            "Description": "Create FXM.Master Collection",
+            "Type": "HttpRequest",
+            "Params": {
+                "Uri": "[concat(variable('Create.Collection.Uri'), '&name=', variable('FXM.Master.Name'), variable('Create.Collection.FxmMaster.QueryParameters'))]",
+                "ContentType": "[variable('Solr.Api.ContentType')]"
+            }
+        },
+        "CreateFXMWebCollection": {
+            "Description": "Create FXM.Web Collection",
+            "Type": "HttpRequest",
+            "Params": {
+                "Uri": "[concat(variable('Create.Collection.Uri'), '&name=', variable('FXM.Web.Name'), variable('Create.Collection.FxmWeb.QueryParameters'))]",
+                "ContentType": "[variable('Solr.Api.ContentType')]"
+            }
+        },
+        "CreatePersonalizationCollection": {
+            "Description": "Create Personalization Collection",
+            "Type": "HttpRequest",
+            "Params": {
+                "Uri": "[concat(variable('Create.Collection.Uri'), '&name=', variable('Personalization.Name'), variable('Create.Collection.Personalization.QueryParameters'))]",
+                "ContentType": "[variable('Solr.Api.ContentType')]"
+            }
+        }
+    },
+    "UninstallTasks": {
+        "DeleteCoreCollection": {
+            "Description": "Delete Core Collection",
+            "Type": "HttpRequest",
+            "Params": {
+                "Uri": "[concat(variable('Delete.Collection.Uri'), '&name=', variable('Core.Name'))]",
+                "ContentType": "[variable('Solr.Api.ContentType')]",
+                "ErrorAction": "SilentlyContinue"
+            }
+        },
+        "DeleteMasterCollection": {
+            "Description": "Delete Master Collection",
+            "Type": "HttpRequest",
+            "Params": {
+                "Uri": "[concat(variable('Delete.Collection.Uri'), '&name=', variable('Master.Name'))]",
+                "ContentType": "[variable('Solr.Api.ContentType')]",
+                "ErrorAction": "SilentlyContinue"
+            }
+        },
+        "DeleteWebCollection": {
+            "Description": "Delete Web Collection",
+            "Type": "HttpRequest",
+            "Params": {
+                "Uri": "[concat(variable('Delete.Collection.Uri'), '&name=', variable('Web.Name'))]",
+                "ContentType": "[variable('Solr.Api.ContentType')]",
+                "ErrorAction": "SilentlyContinue"
+            }
+        },
+        "DeleteMDMasterCollection": {
+            "Description": "Delete MD.Master Collection",
+            "Type": "HttpRequest",
+            "Params": {
+                "Uri": "[concat(variable('Delete.Collection.Uri'), '&name=', variable('MD.Master.Name'))]",
+                "ContentType": "[variable('Solr.Api.ContentType')]",
+                "ErrorAction": "SilentlyContinue"
+            }
+        },
+        "DeleteMDWebCollection": {
+            "Description": "Delete MD.Web Collection",
+            "Type": "HttpRequest",
+            "Params": {
+                "Uri": "[concat(variable('Delete.Collection.Uri'), '&name=', variable('MD.Web.Name'))]",
+                "ContentType": "[variable('Solr.Api.ContentType')]",
+                "ErrorAction": "SilentlyContinue"
+            }
+        },
+        "DeleteMAMasterCollection": {
+            "Description": "Delete MA.Master Collection",
+            "Type": "HttpRequest",
+            "Params": {
+                "Uri": "[concat(variable('Delete.Collection.Uri'), '&name=', variable('MA.Master.Name'))]",
+                "ContentType": "[variable('Solr.Api.ContentType')]",
+                "ErrorAction": "SilentlyContinue"
+            }
+        },
+        "DeleteMAWebCollection": {
+            "Description": "Delete MA.Web Collection",
+            "Type": "HttpRequest",
+            "Params": {
+                "Uri": "[concat(variable('Delete.Collection.Uri'), '&name=', variable('MA.Web.Name'))]",
+                "ContentType": "[variable('Solr.Api.ContentType')]",
+                "ErrorAction": "SilentlyContinue"
+            }
+        },
+        "DeleteTestingCollection": {
+            "Description": "Delete Testing Collection",
+            "Type": "HttpRequest",
+            "Params": {
+                "Uri": "[concat(variable('Delete.Collection.Uri'), '&name=', variable('Testing.Name'))]",
+                "ContentType": "[variable('Solr.Api.ContentType')]",
+                "ErrorAction": "SilentlyContinue"
+            }
+        },
+        "DeleteSuggestedCollection": {
+            "Description": "Delete Suggested Collection",
+            "Type": "HttpRequest",
+            "Params": {
+                "Uri": "[concat(variable('Delete.Collection.Uri'), '&name=', variable('Suggested.Name'))]",
+                "ContentType": "[variable('Solr.Api.ContentType')]",
+                "ErrorAction": "SilentlyContinue"
+            }
+        },
+        "DeleteFXMMasterCollection": {
+            "Description": "Delete FXM.Master Collection",
+            "Type": "HttpRequest",
+            "Params": {
+                "Uri": "[concat(variable('Delete.Collection.Uri'), '&name=', variable('FXM.Master.Name'))]",
+                "ContentType": "[variable('Solr.Api.ContentType')]",
+                "ErrorAction": "SilentlyContinue"
+            }
+        },
+        "DeleteFXMWebCollection": {
+            "Description": "Delete FXM.Web Collection",
+            "Type": "HttpRequest",
+            "Params": {
+                "Uri": "[concat(variable('Delete.Collection.Uri'), '&name=', variable('FXM.Web.Name'))]",
+                "ContentType": "[variable('Solr.Api.ContentType')]",
+                "ErrorAction": "SilentlyContinue"
+            }
+        },
+        "DeletePersonalizationCollection": {
+            "Description": "Delete Personalization Collection",
+            "Type": "HttpRequest",
+            "Params": {
+                "Uri": "[concat(variable('Delete.Collection.Uri'), '&name=', variable('Personalization.Name'))]",
+                "ContentType": "[variable('Solr.Api.ContentType')]",
+                "ErrorAction": "SilentlyContinue"
+            }
+        }
+    }
+}
