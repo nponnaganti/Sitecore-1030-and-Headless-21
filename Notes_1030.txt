@@ -1,0 +1,4 @@
+Ignored below two zip files to git push
+Sitecore 10.3.0 rev. 008463 (OnPrem)_single.scwdp.zip - 215 MB
+Sitecore 10.3.0 rev. 008463 (OnPrem)_xp0xconnect.scwdp.zip - 40 MB
+----------------------------------------------------------------------
