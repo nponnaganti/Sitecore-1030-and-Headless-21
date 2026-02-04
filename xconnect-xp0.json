@@ -536,6 +536,7 @@
             "Type": "InvokeSqlcmd",
             "Params": {
                 "ServerInstance": "[parameter('SqlServer')]",
+				"TrustServerCertificate": true,
                 "Credential": "[variable('Sql.Credential')]",
                 "Query": "[variable('Query')]"
             },
@@ -613,6 +614,7 @@
             "Type": "InvokeSqlcmd",
             "Params": {
                 "ServerInstance": "[parameter('SqlServer')]",
+				"TrustServerCertificate": true,
                 "Credential": "[variable('Sql.Credential')]",
                 "InputFile": "[variable('Sharding.SqlCmd.Path.CreateShardApplicationDatabaseServerLogin')]",
                 "Variable": [
@@ -627,6 +629,7 @@
             "Type": "InvokeSqlcmd",
             "Params": {
                 "ServerInstance": "[parameter('SqlServer')]",
+				"TrustServerCertificate": true,
                 "Credential": "[variable('Sql.Credential')]",
                 "Database": "[variable('Sql.Database.ShardMapManager')]",
                 "InputFile": "[variable('Sharding.SqlCmd.Path.CreateShardManagerApplicationDatabaseUser')]",
@@ -642,6 +645,7 @@
             "Type": "InvokeSqlcmd",
             "Params": {
                 "ServerInstance": "[parameter('SqlServer')]",
+				"TrustServerCertificate": true,
                 "Credential": "[variable('Sql.Credential')]",
                 "Database": "[variable('Sql.Database.Shard0')]",
                 "InputFile": "[variable('Sharding.SqlCmd.Path.CreateShardApplicationDatabaseUser')]",
@@ -657,6 +661,7 @@
             "Type": "InvokeSqlcmd",
             "Params": {
                 "ServerInstance": "[parameter('SqlServer')]",
+				"TrustServerCertificate": true,
                 "Credential": "[variable('Sql.Credential')]",
                 "Database": "[variable('Sql.Database.Shard1')]",
                 "InputFile": "[variable('Sharding.SqlCmd.Path.CreateShardApplicationDatabaseUser')]",

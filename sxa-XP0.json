@@ -64,7 +64,9 @@
         "Sql.Database.Master": "[concat(parameter('SqlDbPrefix'), '_Master')]",
         "Solr.Master.Name": "[concat(parameter('SolrCorePrefix'), '_sxa_master_index')]",
         "Solr.Web.Name": "[concat(parameter('SolrCorePrefix'), '_sxa_web_index')]",
-        "Site.PhysicalPath": "[joinpath(environment('SystemDrive'), 'inetpub', 'wwwroot', parameter('SiteName'))]",
+        
+        "Site.PhysicalPath": "C:\\inetpub\\wwwroot\\test103sc.dev.local",
+
         "Site.DataFolder": "[joinpath(variable('Site.PhysicalPath'), 'App_Data')]",
 
         "Temp.Location" : "[if(variable('Test.Temp.Location'),Environment('Temp'),parameter('PackagesTempLocation'))]",

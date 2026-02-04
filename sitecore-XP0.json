@@ -614,6 +614,7 @@
             "Type": "InvokeSqlcmd",
             "Params": {
                 "ServerInstance": "[parameter('SqlServer')]",
+				"TrustServerCertificate": true,
                 "Credential": "[variable('Sql.Credential')]",
                 "Query": "[variable('Query')]"
             },

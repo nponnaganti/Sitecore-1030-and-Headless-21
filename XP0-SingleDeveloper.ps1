@@ -1,31 +1,35 @@
+#PS C:\WINDOWS\system32> iisreset /stop
+#PS C:\WINDOWS\system32> net stop "zip103solr-8.11.2"
+#PS C:\WINDOWS\system32> Get-InstalledModule -Name SitecoreInstallFramework
 # The Prefix that will be used on SOLR, Website and Database instances.
-$Prefix = "XP0"
+$Prefix = "test103"
 # The Password for the Sitecore Admin User. This will be regenerated if left on the default.
-$SitecoreAdminPassword = ""
+$SitecoreAdminPassword = "b"
 # The root folder with the license file and WDP files.
-$SCInstallRoot = "C:\ResourceFiles"
+$SCInstallRoot = "C:\ResourceFiles-test103"
 # Root folder to install the site to. If left on the default [systemdrive]:\\inetpub\\wwwroot will be used
-$SitePhysicalRoot = ""
+#"Custom.Site.PhysicalPath": "[joinpath(parameter('SitePhysicalRoot'),parameter('SiteName'))]", update in IdentityServer.json, sitecore-XP0.json and xconnect-xp0.json
+$SitePhysicalRoot = "C:\inetpub\wwwroot"
 # The name for the XConnect service.
-$XConnectSiteName = "$prefix.xconnect"
+$XConnectSiteName = "test103xconnect.dev.local"
 # The Sitecore site instance name.
-$SitecoreSiteName = "$prefix.sc"
+$SitecoreSiteName = "test103sc.dev.local"
 # Identity Server site name
-$IdentityServerSiteName = "$prefix.identityserver"
+$IdentityServerSiteName = "test103identityserver.dev.local"
 # The Path to the license file
 $LicenseFile = "$SCInstallRoot\license.xml"
 # The URL of the Solr Server
-$SolrUrl = "https://localhost:8983/solr"
+$SolrUrl = "https://localhost:9026/solr"
 # The Folder that Solr has been installed to.
-$SolrRoot = "C:\Solr-8.11.2"
+$SolrRoot = "C:\solr\solr-8.1.1\zip103solr-8.11.2"
 # The Name of the Solr Service.
-$SolrService = "Solr-8.11.2"
+$SolrService = "zip103solr-8.11.2"
 # The DNS name or IP of the SQL Instance.
-$SqlServer = "localhost"
+$SqlServer = "(local)\SQLEXPRESS2022"
 # A SQL user with sysadmin privileges.
 $SqlAdminUser = "sa"
 # The password for $SQLAdminUser.
-$SqlAdminPassword = "12345"
+$SqlAdminPassword = "D1g1tality!"
 # The path to the XConnect Package to Deploy.
 $XConnectPackage = (Get-ChildItem "$SCInstallRoot\Sitecore * rev. * (OnPrem)_xp0xconnect.*scwdp.zip").FullName
 # The path to the Sitecore Package to Deploy.
